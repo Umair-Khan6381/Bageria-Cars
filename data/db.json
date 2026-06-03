@@ -1,0 +1,292 @@
+{
+  "users": [
+    {
+      "id": "u-admin",
+      "name": "umair",
+      "username": "umair",
+      "password": "123",
+      "email": "umairullah410446@gmail.com",
+      "role": "Admin",
+      "status": "active",
+      "githubProfile": null
+    }
+  ],
+  "customers": [],
+  "vehicles": [
+    {
+      "id": "veh-3jmijvqed",
+      "company": "toyota",
+      "model": "corolla",
+      "variant": "1.6 grande",
+      "modelYear": "2024",
+      "registrationNumber": "kpz 6782",
+      "engineNumber": "324484",
+      "chassisNumber": "563243547",
+      "color": "Black",
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "purchasePrice": 500000,
+      "salePrice": 700000,
+      "photoUrl": "/uploads/1780408413526_images.jpg",
+      "documents": [],
+      "status": "Available",
+      "createdAt": "2026-06-02T13:54:55.123Z"
+    }
+  ],
+  "installments": [],
+  "payments": [],
+  "auditLogs": [
+    {
+      "id": "log-lblrgeiod",
+      "username": "Nooerwali123",
+      "role": "Admin",
+      "action": "Inaugural Admin Registered",
+      "details": "Initialized Master Admin seat for \"Noor Wali Khan\" with contact info \"umairullah410446@gmail.com\"",
+      "timestamp": "2026-05-22T04:36:17.320Z"
+    },
+    {
+      "id": "log-1",
+      "username": "system",
+      "role": "System",
+      "action": "Database Initialized",
+      "details": "Showroom database successfully initialized without any pre-defined accounts. Manual Admin Setup Required.",
+      "timestamp": "2026-05-22T04:33:26.848Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-wcgcql9xg",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairkhan410446@gmail.com for \"umairkhan\"",
+      "timestamp": "2026-06-02T14:23:10.446Z",
+      "read": false
+    },
+    {
+      "id": "notif-xa5pl50fe",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairkhan410446@gmail.com for \"umairkhan\"",
+      "timestamp": "2026-06-02T14:12:50.631Z",
+      "read": false
+    },
+    {
+      "id": "notif-w55zkkh89",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairkhan410446@gmail.com for \"umairkhan\"",
+      "timestamp": "2026-06-02T14:07:05.053Z",
+      "read": false
+    },
+    {
+      "id": "notif-n616q3rt3",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairkhan410446@gmail.com for \"umairkhan\"",
+      "timestamp": "2026-06-02T13:50:52.727Z",
+      "read": false
+    },
+    {
+      "id": "notif-kd2nk6veg",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairullah410446@gmail.com for \"umair\"",
+      "timestamp": "2026-06-01T08:56:05.424Z",
+      "read": false
+    },
+    {
+      "id": "notif-tlcaak96z",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairullah410446@gmail.com for \"umair\"",
+      "timestamp": "2026-06-01T08:02:46.884Z",
+      "read": false,
+      "isRead": true
+    },
+    {
+      "id": "notif-lbt6um6bb",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairullah410446@gmail.com for \"umair\"",
+      "timestamp": "2026-06-01T06:48:00.219Z",
+      "read": false,
+      "isRead": true
+    },
+    {
+      "id": "notif-argxx2r8x",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairullah410446@gmail.com for \"umair\"",
+      "timestamp": "2026-06-01T06:45:33.476Z",
+      "read": false,
+      "isRead": true
+    },
+    {
+      "id": "notif-aod7fjyas",
+      "title": "Login OTP Verification Dispatched",
+      "message": "Security verification OTP sent to umairullah410446@gmail.com for \"umair\"",
+      "timestamp": "2026-06-01T06:34:23.045Z",
+      "read": false,
+      "isRead": true
+    }
+  ],
+  "verificationEmails": [
+    {
+      "id": "email-xo2mzuzjf",
+      "to": "umairkhan410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 171339",
+      "body": "Dear umairkhan,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 171339\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umairkhan\n• Assigned Role: Admin\n• Portal Username: \"umairkhan\"\n• Registered Email: \"umairkhan410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Tue, 02 Jun 2026 14:23:10 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-o7q43he08",
+      "status": "sent",
+      "timestamp": "2026-06-02T14:23:10.446Z"
+    },
+    {
+      "id": "email-qr5hf5rhh",
+      "to": "umairkhan410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 398534",
+      "body": "Dear umairkhan,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 398534\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umairkhan\n• Assigned Role: Admin\n• Portal Username: \"umairkhan\"\n• Registered Email: \"umairkhan410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Tue, 02 Jun 2026 14:12:50 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-o7q43he08",
+      "status": "sent",
+      "timestamp": "2026-06-02T14:12:50.631Z"
+    },
+    {
+      "id": "email-f39kph5md",
+      "to": "umairkhan410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 117722",
+      "body": "Dear umairkhan,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 117722\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umairkhan\n• Assigned Role: Admin\n• Portal Username: \"umairkhan\"\n• Registered Email: \"umairkhan410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Tue, 02 Jun 2026 14:07:05 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-o7q43he08",
+      "status": "sent",
+      "timestamp": "2026-06-02T14:07:05.053Z"
+    },
+    {
+      "id": "email-mma1qkv72",
+      "to": "umairkhan410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 994154",
+      "body": "Dear umairkhan,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 994154\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umairkhan\n• Assigned Role: Admin\n• Portal Username: \"umairkhan\"\n• Registered Email: \"umairkhan410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Tue, 02 Jun 2026 13:50:52 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-o7q43he08",
+      "status": "sent",
+      "timestamp": "2026-06-02T13:50:52.727Z"
+    },
+    {
+      "id": "email-yfg9gun9g",
+      "to": "umairullah410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 451473",
+      "body": "Dear umair,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 451473\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umair\n• Assigned Role: Admin\n• Portal Username: \"umair\"\n• Registered Email: \"umairullah410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Mon, 01 Jun 2026 08:56:05 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-admin",
+      "status": "sent",
+      "timestamp": "2026-06-01T08:56:05.424Z"
+    },
+    {
+      "id": "email-jzjnnt1ys",
+      "to": "umairullah410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 186793",
+      "body": "Dear umair,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 186793\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umair\n• Assigned Role: Admin\n• Portal Username: \"umair\"\n• Registered Email: \"umairullah410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Mon, 01 Jun 2026 08:02:46 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-admin",
+      "status": "sent",
+      "timestamp": "2026-06-01T08:02:46.884Z"
+    },
+    {
+      "id": "email-k0bgd04bp",
+      "to": "umairullah410446@gmail.com",
+      "from": "umairullah410446@gmail.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 770650",
+      "body": "Dear umair,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 770650\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umair\n• Assigned Role: Admin\n• Portal Username: \"umair\"\n• Registered Email (Recipient): \"umairullah410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Mon, 01 Jun 2026 06:48:00 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-admin",
+      "status": "sent",
+      "timestamp": "2026-06-01T06:48:00.219Z"
+    },
+    {
+      "id": "email-a4aislnji",
+      "to": "umairullah410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 770650",
+      "body": "Dear umair,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 770650\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umair\n• Assigned Role: Admin\n• Portal Username: \"umair\"\n• Registered Email: \"umairullah410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Mon, 01 Jun 2026 06:45:33 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-admin",
+      "status": "sent",
+      "timestamp": "2026-06-01T06:45:33.476Z"
+    },
+    {
+      "id": "email-rmc1q8clq",
+      "to": "umairullah410446@gmail.com",
+      "from": "security@baheriamotors.com",
+      "subject": "🔐 LOGIN VERIFICATION CODE: 530344",
+      "body": "Dear umair,\n\nA secure login sequence has been initiated for your Baheria Motors account on your mobile/device.\nTo verify your identity and authorize access, please enter the following 6-digit verification code on your screen:\n\n--------------------------------------------------\n👉   YOUR CODE: 530344\n--------------------------------------------------\n\nSecurity Context:\n• Operator Name: umair\n• Assigned Role: Admin\n• Portal Username: \"umair\"\n• Registered Email: \"umairullah410446@gmail.com\"\n• Service Status: SECURITY LOCK ACTIVE\n• Action Timestamp: Mon, 01 Jun 2026 06:34:23 GMT\n--------------------------------------------------\n\nIf you did not execute this login request, please update your security settings or contact us immediately.",
+      "userId": "u-admin",
+      "status": "sent",
+      "timestamp": "2026-06-01T06:34:23.045Z"
+    }
+  ],
+  "tempLoginCodes": {},
+  "notificationSettings": {
+    "smtpHost": "smtp.gmail.com",
+    "smtpPort": "465",
+    "smtpUser": "umairullah410446@gmail.com",
+    "smtpPass": "yeveurefaxkgccgt",
+    "smtpSecure": true,
+    "senderEmail": "umairullah410446@gmail.com",
+    "enableEmail": true
+  },
+  "notificationLogs": [
+    {
+      "id": "nlg-hzdusoeby",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairkhan410446@gmail.com",
+      "status": "success",
+      "detail": "Email dispatched successfully via SMTP server (smtp.gmail.com)",
+      "timestamp": "2026-06-02T14:23:12.992Z"
+    },
+    {
+      "id": "nlg-n1sve4m4y",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairkhan410446@gmail.com",
+      "status": "success",
+      "detail": "Email dispatched successfully via SMTP server (smtp.gmail.com)",
+      "timestamp": "2026-06-02T14:12:53.213Z"
+    },
+    {
+      "id": "nlg-vmi9rb5q2",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairkhan410446@gmail.com",
+      "status": "success",
+      "detail": "Email dispatched successfully via SMTP server (smtp.gmail.com)",
+      "timestamp": "2026-06-02T14:07:08.079Z"
+    },
+    {
+      "id": "nlg-1rc1eh5hj",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairkhan410446@gmail.com",
+      "status": "success",
+      "detail": "Email dispatched successfully via SMTP server (smtp.gmail.com)",
+      "timestamp": "2026-06-02T13:50:55.544Z"
+    },
+    {
+      "id": "nlg-qeudhfg8p",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairullah410446@gmail.com",
+      "status": "failed",
+      "detail": "SMTP Error: Invalid login: 534-5.7.9 Application-specific password required. For more information, go to\n534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor d9443c01a7336-2bf23a1e095sm102583045ad.32 - gsmtp",
+      "timestamp": "2026-06-01T08:56:06.879Z"
+    },
+    {
+      "id": "nlg-2c70yocph",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairullah410446@gmail.com",
+      "status": "failed",
+      "detail": "SMTP Error: Invalid login: 534-5.7.9 Application-specific password required. For more information, go to\n534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor d2e1a72fcca58-842313512a6sm6617634b3a.58 - gsmtp",
+      "timestamp": "2026-06-01T08:02:47.565Z"
+    },
+    {
+      "id": "nlg-y4weepf5a",
+      "type": "alert",
+      "channel": "SMTP Transporter",
+      "recipient": "umairullah410446@gmail.com",
+      "status": "failed",
+      "detail": "SMTP Error: Invalid login: 534-5.7.9 Application-specific password required. For more information, go to\n534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor d2e1a72fcca58-84214c92fd2sm9045278b3a.38 - gsmtp",
+      "timestamp": "2026-06-01T06:48:00.884Z"
+    }
+  ]
+}

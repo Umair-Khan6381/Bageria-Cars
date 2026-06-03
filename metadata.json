@@ -1,0 +1,6 @@
+{
+  "name": "Baheria Motors Dashboard",
+  "description": "A modern web-based full-stack Vehicle Installment Management Dashboard for showroom inventory, customer profile records, and complete recovery workflow tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

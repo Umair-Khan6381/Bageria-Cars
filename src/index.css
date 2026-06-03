@@ -1,0 +1,640 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", sans-serif;
+  --font-display: "Montserrat", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Global root scale to increase the entire app typography beautifully */
+:root {
+  font-size: 17.5px !important; /* Elevates base text size */
+}
+
+@media (min-width: 1024px) {
+  :root {
+    font-size: 18.5px !important; /* Desktop-first precision for large screens */
+  }
+}
+
+/* Custom UI Polish Adjustments for Sophisticated Dark Theme with high legibility */
+:root:not(.light) {
+  body {
+    background-color: #080808 !important;
+    color: #ffffff !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+  }
+  .bg-gray-50 {
+    background-color: #080808 !important;
+  }
+  .bg-white, [class*="bg-white"] {
+    background-color: #121213 !important;
+    color: #ffffff !important;
+  }
+  .bg-slate-50, 
+  .bg-slate-100/50, 
+  .bg-indigo-50, 
+  .bg-emerald-50, 
+  .bg-blue-50, 
+  .bg-rose-50/50, 
+  .bg-slate-950/20, 
+  .bg-slate-900/50 {
+    background-color: #17171a !important;
+  }
+  .bg-slate-900 {
+    background-color: #111112 !important;
+  }
+  .bg-slate-950, .bg-[#0b0e17] {
+    background-color: #0a0a0b !important;
+  }
+  .bg-[#0d121f] {
+    background-color: #141416 !important;
+  }
+  .bg-[#070b13] {
+    background-color: #070708 !important;
+  }
+  .text-slate-900, 
+  .text-zinc-900, 
+  .text-gray-900 {
+    color: #ffffff !important;
+  }
+  .text-slate-800 {
+    color: #ffffff !important;
+  }
+  .text-slate-700 {
+    color: #f9fafb !important;
+  }
+  .text-slate-600 {
+    color: #f3f4f6 !important;
+  }
+  .text-slate-500 {
+    color: #e5e7eb !important;
+  }
+  .text-slate-400 {
+    color: #d1d5db !important;
+  }
+  .text-slate-300 {
+    color: #f9fafb !important;
+  }
+  .text-slate-200 {
+    color: #ffffff !important;
+  }
+  .text-slate-100 {
+    color: #ffffff !important;
+  }
+  .border,
+  .border-t,
+  .border-b,
+  .border-l,
+  .border-r,
+  .border-slate-100,
+  .border-slate-150,
+  .border-slate-200,
+  .border-slate-800,
+  .border-slate-800\/60,
+  .border-[#2e2e33],
+  .border-slate-800\/20,
+  .border-slate-105,
+  .divide-slate-50,
+  .divide-slate-100 {
+    border-color: #222225 !important;
+  }
+  .bg-slate-800, [class*="bg-slate-800"], button[class*="bg-slate-800"] {
+    background-color: #151517 !important;
+    border: 1px solid #28282b !important;
+    color: #ffffff !important;
+  }
+  .bg-slate-800:hover, button[class*="bg-slate-800"]:hover {
+    background-color: #1d1d21 !important;
+    border-color: #af9268 !important;
+    color: #c5a880 !important;
+  }
+  .font-mono-fig,
+  .font-mono,
+  [class*="font-mono"] {
+    color: #ffffff !important;
+  }
+  div[class*="bg-[#121214]"][class*="border"] {
+    background-color: #101012 !important;
+    border-color: #242428 !important;
+  }
+  input[type="text"], input[type="password"], input[type="email"] {
+    background-color: #111113 !important;
+    border: 1px solid #232327 !important;
+    color: #ffffff !important;
+  }
+  input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+    border-color: #af9268 !important;
+    background-color: #151518 !important;
+  }
+  span[class*="font-mono-fig"] {
+    color: #c5a880 !important;
+    background-color: rgba(197, 168, 128, 0.08) !important;
+    border: 1px solid rgba(197, 168, 128, 0.15) !important;
+  }
+  .bg-rose-50\/50, .border-rose-100 {
+    background-color: rgba(220, 38, 38, 0.05) !important;
+    border-color: rgba(220, 38, 38, 0.2) !important;
+  }
+  .bg-emerald-50, .border-emerald-150 {
+    background-color: rgba(16, 185, 129, 0.05) !important;
+    border-color: rgba(16, 185, 129, 0.2) !important;
+  }
+  input, select, textarea {
+    background-color: #17171a !important;
+    color: #ffffff !important;
+    border: 1px solid #222225 !important;
+  }
+}
+
+:root.light {
+  body {
+    background-color: #f1f5f9 !important;
+    background-image: none !important;
+    color: #000000 !important;
+  }
+  
+  /* Elements & layout text must be solid high-contrast black under light theme */
+  *, h1, h2, h3, h4, h5, h6, p, span, div, th, td, label, p, a, li, input, select, textarea {
+    color: #000000 !important;
+  }
+
+  /* Exclude icons that have color roles from being overwritten, but target general icon svg items to be #f1cb95 */
+  svg:not(.text-emerald-500):not(.text-rose-500):not(.text-amber-500) {
+    color: #f1cb95 !important;
+    stroke: #f1cb95 !important;
+  }
+
+  /* Any icon inside a button or a badge needs darker color to remain fully visible/contrasted on the #f1cb95 button background */
+  button svg,
+  button svg *,
+  [role="button"] svg,
+  [role="button"] svg *,
+  .bg-indigo-650 svg,
+  .bg-indigo-650 svg *,
+  .text-slate-900 svg,
+  .text-slate-900 svg *,
+  .bg-\[\#af9268\] svg,
+  .bg-\[\#af9268\] svg * {
+    color: #1a150e !important;
+    stroke: #1a150e !important;
+  }
+
+  /* All general buttons in light theme must use the color code #f1cb95 */
+  button:not([class*="bg-rose"]):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-green"]):not([class*="bg-[#af9268]/10"]):not([class*="bg-[#af9268]/20"]):not([class*="bg-rose-50"]),
+  input[type="submit"],
+  .bg-indigo-600,
+  .bg-\[\#af9268\] {
+    background-color: #f1cb95 !important;
+    background-image: none !important;
+    color: #1a150e !important; /* Elegant black/deep charcoal label text */
+    border: 1px solid #e8b674 !important;
+  }
+
+  button:not([class*="bg-rose"]):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-green"]):not([class*="bg-[#af9268]/10"]):not([class*="bg-[#af9268]/20"]):not([class*="bg-rose-50"]):hover,
+  input[type="submit"]:hover,
+  .bg-indigo-600:hover,
+  .bg-\[\#af9268\]:hover {
+    background-color: #e8bd82 !important;
+    color: #000000 !important;
+    border-color: #d2a15c !important;
+  }
+
+  /* Form controls, inputs, select box values */
+  input, select, textarea {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  /* Solid black color overrides for typical slate, gray, zinc utility color strings */
+  .text-slate-50,
+  .text-slate-100,
+  .text-slate-200,
+  .text-slate-300,
+  .text-slate-400,
+  .text-slate-500,
+  .text-slate-600,
+  .text-slate-700,
+  .text-slate-800,
+  .text-slate-900,
+  .text-gray-100,
+  .text-gray-200,
+  .text-gray-300,
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  .text-zinc-105,
+  .text-zinc-200,
+  .text-zinc-300,
+  .text-zinc-400,
+  .text-zinc-500,
+  .text-zinc-650,
+  .text-zinc-800,
+  .text-zinc-900,
+  .text-slate-350,
+  .text-slate-450 {
+    color: #000000 !important;
+  }
+
+  /* Overwrite the premium metallic yellow text elements with dark, high contrast bronze text */
+  .text-\[\#c5a880\], .text-\[\#af9268\] {
+    color: #2c1a01 !important;
+  }
+
+  /* Force absolute pure white card background for all layouts */
+  .bg-white,
+  .bg-slate-50,
+  .bg-slate-100,
+  .bg-slate-100\/50,
+  .bg-slate-200,
+  .bg-slate-900,
+  .bg-slate-950,
+  .bg-\[\#121213\],
+  .bg-\[\#17171a\],
+  .bg-\[\#111112\],
+  .bg-\[\#0a0a0b\],
+  .bg-\[\#0b0e17\],
+  .bg-\[\#141416\],
+  .bg-\[\#070708\],
+  .bg-\[\#070b13\],
+  .bg-\[\#070a13\],
+  .bg-\[\#090d16\],
+  .bg-\[\#0c1220\],
+  .bg-\[\#111115\],
+  .bg-\[\#1e1e24\],
+  .bg-\[\#121927\],
+  .bg-\[\#151517\],
+  .bg-\[\#101012\],
+  .bg-\[\#161619\],
+  .bg-\[\#1a1a1d\],
+  .bg-\[\#111113\],
+  .bg-\[\#121214\],
+  .backdrop-blur-2xl,
+  [class*="bg-white"],
+  [class*="bg-slate-"],
+  [class*="bg-zinc-"],
+  [class*="bg-gray-"],
+  [class*="bg-neutral-"],
+  [class*="bg-[#0c101b]"],
+  [class*="bg-[#121214]"],
+  [class*="bg-[#111113]"] {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    color: #000000 !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Specific white overlays for dashboard header banners in light theme */
+  [class*="from-slate-900"],
+  [class*="from-slate-950"] {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  /* Soft ambient image overlays for login slideshow and headers under light theme */
+  .bg-gradient-to-t.from-\[\#070b13\],
+  .bg-gradient-to-t.from-\[\#0c101b\],
+  [class*="from-[#070b13]"],
+  [class*="from-[#0c101b]"] {
+    background-image: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.15) 100%) !important;
+    background-color: transparent !important;
+    opacity: 0.95 !important;
+  }
+
+  .bg-gradient-to-r[class*="to-[#070b13]"],
+  .bg-gradient-to-r[class*="to-[#0c101b]"] {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.95) 100%) !important;
+    background-color: transparent !important;
+    opacity: 0.95 !important;
+  }
+
+  /* Card wrappers on tables, reports layout, login layout grids */
+  .grid.lg\:grid-cols-12,
+  .min-h-\[625px\] {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  /* Clear default dark borders and replace with crisp gray borders for daylight screens */
+  .border,
+  .border-t,
+  .border-b,
+  .border-l,
+  .border-r,
+  [class*="border-slate-"],
+  [class*="border-zinc-"],
+  [class*="border-gray-"],
+  .border-\[\#2e2e33\],
+  .border-\[\#af9268\]\/20,
+  .border-\[\#af9268\]\/30 {
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Clean daylight table rows, heads & hover items */
+  thead, thead *, tr {
+    background-color: #f8fafc !important;
+  }
+  
+  tr:hover, tr:hover td {
+    background-color: #f1f5f9 !important;
+  }
+  
+  td {
+    color: #000000 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  /* Focus rings & high-end day badges */
+  div[class*="bg-[#121214]"][class*="border"] {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  span[class*="font-mono-fig"] {
+    color: #5c401c !important;
+    background-color: rgba(165, 134, 90, 0.12) !important;
+    border: 1px solid rgba(165, 134, 90, 0.3) !important;
+  }
+
+  /* Icon and Badge backgrounds under Light theme with high contrast and premium design elements set to #f1cb95 */
+  span[class*="bg-[#af9268]"], 
+  div[class*="bg-[#af9268]"],
+  span[class*="bg-[#c5a880]"],
+  div[class*="bg-[#c5a880]"],
+  .bg-\[\#af9268\]\/10,
+  .bg-\[\#af9268\]\/15,
+  .bg-\[\#af9268\]\/20,
+  .bg-\[\#af9268\]\/25 {
+    background-color: #f1cb95 !important; /* Set directly to users code #f1cb95 */
+    border: 1px solid #e3cbb1 !important;
+    color: #2c1a01 !important;
+  }
+
+  /* Force color on child svgs and subpaths to prevent wildcard zeroing them */
+  span[class*="bg-[#af9268]"] svg,
+  div[class*="bg-[#af9268]"] svg,
+  span[class*="bg-[#c5a880]"] svg,
+  div[class*="bg-[#c5a880]"] svg,
+  .bg-\[\#af9268\]\/10 svg,
+  .bg-\[\#af9268\]\/15 svg,
+  .bg-\[\#af9268\]\/20 svg,
+  .bg-\[\#af9268\]\/25 svg,
+  span[class*="bg-[#af9268]"] svg *,
+  div[class*="bg-[#af9268]"] svg *,
+  span[class*="bg-[#c5a880]"] svg *,
+  div[class*="bg-[#c5a880]"] svg *,
+  .bg-\[\#af9268\]\/10 svg *,
+  .bg-\[\#af9268\]\/15 svg *,
+  .bg-\[\#af9268\]\/20 svg *,
+  .bg-\[\#af9268\]\/25 svg * {
+    color: #2c1a01 !important;
+    stroke: #2c1a01 !important;
+  }
+
+  .bg-emerald-500\/10,
+  .bg-emerald-50 {
+    background-color: #ecfdf5 !important; /* Soft emerald green background */
+    border: 1px solid #a7f3d0 !important;
+    color: #065f46 !important;
+  }
+  
+  .bg-emerald-500\/10 svg,
+  .bg-emerald-50 svg,
+  .bg-emerald-500\/10 svg *,
+  .bg-emerald-50 svg * {
+    color: #065f46 !important;
+    stroke: #065f46 !important;
+  }
+
+  .bg-rose-500\/5,
+  .bg-rose-500\/10,
+  .bg-rose-50,
+  .bg-rose-100 {
+    background-color: #fef2f2 !important; /* Soft rose red background */
+    border: 1px solid #fca5a5 !important;
+    color: #991b1b !important;
+  }
+
+  .bg-rose-500\/5 svg,
+  .bg-rose-500\/10 svg,
+  .bg-rose-50 svg,
+  .bg-rose-100 svg,
+  .bg-rose-500\/5 svg *,
+  .bg-rose-500\/10 svg *,
+  .bg-rose-50 svg *,
+  .bg-rose-100 svg * {
+    color: #991b1b !important;
+    stroke: #991b1b !important;
+  }
+
+  .bg-indigo-50,
+  .bg-indigo-500\/10 {
+    background-color: #eef2ff !important;
+    border: 1px solid #c7d2fe !important;
+    color: #3730a3 !important;
+  }
+
+  .bg-indigo-50 svg,
+  .bg-indigo-500\/10 svg,
+  .bg-indigo-50 svg *,
+  .bg-indigo-500\/10 svg * {
+    color: #3730a3 !important;
+    stroke: #3730a3 !important;
+  }
+
+  .bg-blue-50,
+  .bg-blue-500\/10 {
+    background-color: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    color: #1e40af !important;
+  }
+
+  .bg-blue-50 svg,
+  .bg-blue-500\/10 svg,
+  .bg-blue-50 svg *,
+  .bg-blue-500\/10 svg * {
+    color: #1e40af !important;
+    stroke: #1e40af !important;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  letter-spacing: 0.015em !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display) !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Prevent sub-pixel strain by making fine-grained texts larger and thicker */
+.text-xs {
+  font-size: 0.825rem !important; /* Map 12px -> ~14.5px elegant size */
+  font-weight: 500 !important;    /* Medium weight provides readable stroke thickness on dark layouts */
+}
+
+.text-sm {
+  font-size: 0.94rem !important;  /* Map 14px -> ~16.5px highly readable size */
+}
+
+.text-base, body {
+  font-size: 1.05rem !important;  /* Map 16px -> ~18.5px standard size */
+}
+
+.font-mono-fig {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Primary Amber / Champagne Accent overrides representing luxury and refinement */
+.text-indigo-600,
+.text-indigo-500,
+.text-indigo-400,
+.text-indigo-300 {
+  color: #c5a880 !important; /* Premium gold / champagne accent */
+}
+
+.bg-indigo-600 {
+  background: linear-gradient(135deg, #a5865a 0%, #bfa278 100%) !important; /* Elegant champagne gold gradient */
+  color: #0c0c0e !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  font-size: 0.75rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 15px rgba(165, 134, 90, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.bg-indigo-600:hover, 
+.hover\:bg-indigo-500:hover, 
+.hover\:bg-indigo-600:hover {
+  background: linear-gradient(135deg, #c5a880 0%, #af9268 100%) !important;
+  color: #080808 !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 20px rgba(197, 168, 128, 0.28) !important;
+}
+
+.bg-indigo-600:active {
+  transform: translateY(0.5px);
+  box-shadow: 0 2px 8px rgba(197, 168, 128, 0.15) !important;
+}
+
+/* Redesign secondary & outline buttons universally */
+button:not(.bg-indigo-600):not([class*="text-rose-"]):not([class*="text-emerald-"]) {
+  border-radius: 6px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Dark Titanium styling for secondary panels/buttons */
+.bg-slate-800, [class*="bg-slate-800"], button[class*="bg-slate-800"] {
+  background-color: #151517 !important;
+  border: 1px solid #28282b !important;
+  color: #ffffff !important;
+}
+
+.bg-slate-800:hover, button[class*="bg-slate-800"]:hover {
+  background-color: #1d1d21 !important;
+  border-color: #af9268 !important; /* Gold fine highlight line */
+  color: #c5a880 !important;
+}
+
+/* Custom design for date & time components globally */
+.font-mono-fig,
+.font-mono,
+[class*="font-mono"] {
+  font-family: var(--font-mono) !important;
+  letter-spacing: -0.01em !important;
+  color: #ffffff !important;
+}
+
+/* Beautiful vintage clock dials / date cells styling */
+div[class*="bg-[#121214]"][class*="border"] {
+  background-color: #101012 !important;
+  border-color: #242428 !important;
+}
+
+/* Beautiful Search input fields universally inside elements */
+input[type="text"] {
+  background-color: #111113 !important;
+  border: 1px solid #232327 !important;
+  transition: all 0.25s ease !important;
+  color: #ffffff !important;
+  caret-color: #af9268 !required !important;
+}
+
+input[type="text"]:focus {
+  border-color: #af9268 !important;
+  box-shadow: 0 0 12px rgba(175, 146, 104, 0.18) !important;
+  background-color: #151518 !important;
+}
+
+/* Elegant badges for status timelines, dates & actions */
+span[class*="font-mono-fig"] {
+  color: #c5a880 !important;
+  background-color: rgba(197, 168, 128, 0.08) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(197, 168, 128, 0.15) !important;
+}
+
+/* Banner Gradients re-tuned to Dark Metallic Bronze */
+:root:not(.light) .bg-gradient-to-r.from-slate-900 {
+  background-image: linear-gradient(to right, #111112, #1c1c1f, #151517) !important;
+  border: 1px solid #c5a8802a !important;
+}
+
+/* Overwrite specific glowing alerts */
+.bg-rose-50\/50, .border-rose-100 {
+  background-color: rgba(220, 38, 38, 0.05) !important;
+  border-color: rgba(220, 38, 38, 0.2) !important;
+}
+
+.bg-emerald-50, .border-emerald-150 {
+  background-color: rgba(16, 185, 129, 0.05) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Style raw browser default inputs */
+input, select, textarea {
+  background-color: #17171a !important;
+  color: #ffffff !important;
+  border: 1px solid #222225 !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #c5a880 !important;
+  outline: none !important;
+}
+
+/* Standard scrollbars with round edges */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #080808;
+}
+::-webkit-scrollbar-thumb {
+  background: #222225;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #333337;
+}
