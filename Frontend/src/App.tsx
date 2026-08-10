@@ -4,21 +4,22 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Home, 
-  Users, 
-  Car, 
-  Calculator, 
-  DollarSign, 
-  FileText, 
-  ShieldCheck, 
-  LogOut, 
-  Menu, 
-  X, 
-  Search, 
-  Bell, 
-  Clock, 
-  Lock, 
+import { useLocation, Navigate } from 'react-router-dom';
+import {
+  Home,
+  Users,
+  Car,
+  Calculator,
+  DollarSign,
+  FileText,
+  ShieldCheck,
+  LogOut,
+  Menu,
+  X,
+  Search,
+  Bell,
+  Clock,
+  Lock,
   Sparkles,
   ArrowRight,
   Info,
@@ -48,6 +49,7 @@ import RecoveryOfficerPanel from './components/RecoveryOfficerPanel';
 import ReportsPanel from './components/ReportsPanel';
 import BackupLogsPanel from './components/BackupLogsPanel';
 import PartnersPanel from './components/PartnersPanel';
+import LandingPage from './components/LandingPage';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { User, Customer, Vehicle, InstallmentPlan, Payment, AuditLog } from './types';
@@ -68,6 +70,8 @@ async function safeFetchJson<T>(url: string, fallback: T): Promise<T> {
 }
 
 export default function App() {
+  const location = useLocation();
+
   // Session authentication states
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('baheria_current_user');
@@ -127,7 +131,7 @@ export default function App() {
   const [adminSetupPassword, setAdminSetupPassword] = useState('');
   const [adminSetupEmail, setAdminSetupEmail] = useState('umairullah410446@gmail.com');
   const [setupLoading, setSetupLoading] = useState(false);
-  
+
   // Dynamic user lists for administrator workspace controls
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [verificationEmails, setVerificationEmails] = useState<any[]>([]);
@@ -171,7 +175,7 @@ export default function App() {
       return () => clearInterval(interval);
     }
   }, [currentUser]);
-  
+
   // Forgot password flow
   const [forgotFlow, setForgotFlow] = useState(false);
   const [forgotUser, setForgotUser] = useState('');
@@ -228,7 +232,7 @@ export default function App() {
   useEffect(() => {
     if (currentUser) {
       fetchNotifications();
-      
+
       const sse = new EventSource('/api/notifications/stream');
       sse.onmessage = (event) => {
         try {
@@ -545,18 +549,18 @@ export default function App() {
         throw new Error('OAuth route unavailable');
       }
       const { url } = await resp.json();
-      
+
       const width = 600;
       const height = 700;
       const left = window.screen.width / 2 - width / 2;
       const top = window.screen.height / 2 - height / 2;
-      
+
       const authWindow = window.open(
         url,
         'github_oauth_popup',
         `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,status=yes`
       );
-      
+
       if (!authWindow) {
         alert('Popup blocked! Please allow popups for this site is required to authenticate with GitHub.');
       }
@@ -838,11 +842,11 @@ export default function App() {
       const res = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          username: forgotUser, 
-          newPassword: forgotNewPass, 
-          email: forgotEmail, 
-          code: forgotOtp 
+        body: JSON.stringify({
+          username: forgotUser,
+          newPassword: forgotNewPass,
+          email: forgotEmail,
+          code: forgotOtp
         })
       });
       const data = await res.json();
@@ -912,105 +916,7 @@ export default function App() {
     setLoginPassword('');
   };
 
-  // Main UI routing control block
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'home':
-        return (
-          <DashboardHome 
-            summary={summary}
-            recentPayments={payments}
-            recentSales={installments}
-            onNavigate={(tab) => setActiveTab(tab as any)}
-            currentUser={currentUser}
-            customers={customers}
-          />
-        );
-      case 'customers':
-        return (
-          <CustomerManagement 
-            customers={customers}
-            installments={installments}
-            payments={payments}
-            onAddCustomer={handleAddCustomer}
-            onEditCustomer={handleEditCustomer}
-            onDeleteCustomer={handleDeleteCustomer}
-            currentUser={currentUser}
-          />
-        );
-      case 'vehicles':
-        return (
-          <VehicleManagement 
-            vehicles={vehicles}
-            onAddVehicle={handleAddVehicle}
-            onEditVehicle={handleEditVehicle}
-            onDeleteVehicle={handleDeleteVehicle}
-            currentUser={currentUser}
-          />
-        );
-      case 'installments':
-        return (
-          <InstallmentManagement 
-            customers={customers}
-            vehicles={vehicles}
-            installments={installments}
-            onAddInstallment={handleAddInstallment}
-            currentUser={currentUser}
-            allUsers={allUsers}
-          />
-        );
-      case 'repayments':
-        return (
-          <RecoveryOfficerPanel 
-            customers={customers}
-            installments={installments}
-            payments={payments}
-            onRecordPayment={handleRecordPayment}
-            currentUser={currentUser}
-          />
-        );
-      case 'reports':
-        return (
-          <ReportsPanel 
-            customers={customers}
-            vehicles={vehicles}
-            installments={installments}
-            payments={payments}
-            summary={summary}
-          />
-        );
-      case 'security':
-        return (
-          <BackupLogsPanel 
-            auditLogs={auditLogs}
-            currentUser={currentUser}
-            onRefreshLogs={fetchData}
-            usersList={allUsers}
-            onCreateUser={handleCreateStaffUser}
-            onDeleteUser={handleDeleteStaffUser}
-            onApproveLogin={handleApproveStaffLogin}
-            onRejectLogin={handleRejectStaffLogin}
-            onResetUserPin={handleResetStaffUserPin}
-          />
-        );
-      case 'partners-profiles':
-      case 'partners-transactions':
-      case 'partners-ledger':
-      case 'partners-reports':
-        return (
-          <PartnersPanel 
-            currentUser={currentUser}
-            activeSubTab={activeTab}
-            setActiveSubTab={setActiveTab}
-          />
-        );
-      default:
-        return <div>Tab not found</div>;
-    }
-  };
-
-  // If no active session, render secure stylish login UI
-  if (!currentUser) {
+  const renderLoginPage = () => {
     return (
       <div className="min-h-screen bg-[#070b13] flex items-center justify-center p-4 relative overflow-hidden font-sans text-slate-100 selection:bg-indigo-600 select-none">
         {/* Theme Toggle Button */}
@@ -1030,7 +936,7 @@ export default function App() {
 
         {/* Brand Master Wrap layout */}
         <div className="w-full max-w-5xl bg-[#0c101b]/60 backdrop-blur-2xl rounded-3xl border border-slate-800/80 shadow-2xl relative z-10 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[625px]">
-          
+
           {/* LEFT COLUMN: DYNAMIC CAR VISUAL SHOWCASE (visible on lg screens and up) */}
           <div className="lg:col-span-7 hidden lg:block relative overflow-hidden bg-slate-950 border-r border-slate-850">
             {/* Upper Floating Badge */}
@@ -1057,7 +963,7 @@ export default function App() {
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover select-none object-center brightness-[0.65] contrast-[1.05] transition-transform duration-[6000ms]"
                 />
-                
+
                 {/* Elegant Black Gradient overlay to sink form & text */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070b13] via-transparent to-transparent opacity-95" />
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#070b13]/25 to-[#070b13]" />
@@ -1103,7 +1009,7 @@ export default function App() {
 
           {/* RIGHT COLUMN: ACCESS FORM WORKSTATION */}
           <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 lg:p-10 space-y-6 bg-slate-900/20">
-            
+
             {/* Top Branding Section */}
             <div className="space-y-1.5 text-center lg:text-left">
               <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-slate-100 via-indigo-100 to-[#c5a880]">
@@ -1116,14 +1022,14 @@ export default function App() {
 
             {/* MOBILE CAR HERO BANNER - Visible only on viewport lower than lg */}
             <div className="lg:hidden relative h-40 w-full rounded-2xl overflow-hidden border border-slate-800/80 my-1 bg-slate-950">
-              <img 
-                src={carSlides[activeCarSlide].url} 
-                alt="Baheria Motors Showcase" 
+              <img
+                src={carSlides[activeCarSlide].url}
+                alt="Baheria Motors Showcase"
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover brightness-[0.6] transition-opacity duration-500" 
+                className="w-full h-full object-cover brightness-[0.6] transition-opacity duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0c101b] via-[#0c101b]/30 to-transparent" />
-              
+
               {/* Slide controls for mobile screen */}
               <div className="absolute bottom-3 right-3 flex gap-1.5">
                 {carSlides.map((_, idx) => (
@@ -1168,8 +1074,8 @@ export default function App() {
 
                   <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-[#c5a880]">
                     <label className="block">Admin Real Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={adminSetupName}
                       onChange={(e) => setAdminSetupName(e.target.value)}
                       className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-semibold"
@@ -1181,8 +1087,8 @@ export default function App() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
                       <label className="block">Login Username</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={adminSetupUsername}
                         onChange={(e) => setAdminSetupUsername(e.target.value)}
                         className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-mono"
@@ -1192,8 +1098,8 @@ export default function App() {
                     </div>
                     <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
                       <label className="block">Setup Pass PIN</label>
-                      <input 
-                        type="password" 
+                      <input
+                        type="password"
                         value={adminSetupPassword}
                         onChange={(e) => setAdminSetupPassword(e.target.value)}
                         className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-mono"
@@ -1205,8 +1111,8 @@ export default function App() {
 
                   <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <label className="block">Admin Clearance Email</label>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       value={adminSetupEmail}
                       onChange={(e) => setAdminSetupEmail(e.target.value)}
                       className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-semibold"
@@ -1233,9 +1139,9 @@ export default function App() {
                       <UserPlus size={13} className="text-[#c5a880]" />
                       Self-Registration Console
                     </span>
-                    <button 
-                      type="button" 
-                      onClick={() => { setRegisterFlow(false); setAuthError(''); setRegSuccess(''); }} 
+                    <button
+                      type="button"
+                      onClick={() => { setRegisterFlow(false); setAuthError(''); setRegSuccess(''); }}
                       className="text-[9px] text-[#c5a880] hover:text-[#b0936b] transition font-bold uppercase"
                     >
                       Back to Login
@@ -1249,15 +1155,15 @@ export default function App() {
                   )}
 
                   {regSuccess && (
-                     <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl text-xs text-emerald-300 font-semibold leading-relaxed">
-                       {regSuccess}
-                     </div>
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl text-xs text-emerald-300 font-semibold leading-relaxed">
+                      {regSuccess}
+                    </div>
                   )}
 
                   <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-[#c5a880]">
                     <label className="block">Full Officer Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
                       className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs shadow-inner"
@@ -1268,8 +1174,8 @@ export default function App() {
 
                   <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <label className="block">Portal Username</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={regUsername}
                       onChange={(e) => setRegUsername(e.target.value)}
                       className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] font-mono text-xs shadow-inner"
@@ -1287,8 +1193,8 @@ export default function App() {
 
                   <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <label className="block">Showroom Pass PIN Code</label>
-                    <input 
-                      type="password" 
+                    <input
+                      type="password"
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
                       className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] font-mono text-xs shadow-inner"
@@ -1299,8 +1205,8 @@ export default function App() {
 
                   <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-[#c5a880]">
                     <label className="block">Email Address (For Secure OTP Verification)</label>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
                       className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs shadow-inner"
@@ -1381,10 +1287,10 @@ export default function App() {
                             <div className="space-y-1">
                               <div className="flex justify-between">
                                 <label className="block text-[8.5px] uppercase tracking-widest font-bold text-[#c5a880] font-mono">Gmail App Password / Code</label>
-                                <a 
-                                  href="https://myaccount.google.com/apppasswords" 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
+                                <a
+                                  href="https://myaccount.google.com/apppasswords"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
                                   className="text-[8px] text-indigo-400 hover:underline font-bold"
                                 >
                                   Get App Password ↗
@@ -1434,8 +1340,8 @@ export default function App() {
 
                       <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-[#c5a880]">
                         <label className="block">Enter 6-Digit Code</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           maxLength={6}
                           value={loginOtpCode}
                           onChange={(e) => setLoginOtpCode(e.target.value.replace(/\D/g, ''))}
@@ -1473,8 +1379,8 @@ export default function App() {
 
                     <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-[#c5a880]">
                       <label className="block">Authorized Username</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={loginUsername}
                         onChange={(e) => setLoginUsername(e.target.value)}
                         className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] font-mono transition text-xs shadow-inner"
@@ -1486,16 +1392,16 @@ export default function App() {
                     <div className="space-y-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
                       <div className="flex justify-between items-center">
                         <label className="block">Showroom Pass PIN</label>
-                        <button 
-                          type="button" 
-                          onClick={() => { setForgotFlow(true); setForgotStep(1); setForgotMsg(''); }} 
+                        <button
+                          type="button"
+                          onClick={() => { setForgotFlow(true); setForgotStep(1); setForgotMsg(''); }}
                           className="text-[9px] text-[#c5a880] hover:text-[#b0936b] transition font-bold tracking-normal uppercase"
                         >
                           Reset PIN?
                         </button>
                       </div>
-                      <input 
-                        type="password" 
+                      <input
+                        type="password"
                         value={loginPassword}
                         onChange={(e) => setLoginPassword(e.target.value)}
                         className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] font-mono transition text-xs shadow-inner"
@@ -1549,8 +1455,8 @@ export default function App() {
                     <>
                       <div className="space-y-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         <label className="block">Admin Username</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={forgotUser}
                           onChange={(e) => setForgotUser(e.target.value)}
                           className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-mono"
@@ -1561,8 +1467,8 @@ export default function App() {
 
                       <div className="space-y-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         <label className="block">Registered Admin Email</label>
-                        <input 
-                          type="email" 
+                        <input
+                          type="email"
                           value={forgotEmail}
                           onChange={(e) => setForgotEmail(e.target.value)}
                           className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-mono"
@@ -1597,8 +1503,8 @@ export default function App() {
 
                       <div className="space-y-1.5 text-[10px] font-bold text-[#c5a880] uppercase tracking-wider">
                         <label className="block">Enter 6-Digit Code</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           maxLength={6}
                           value={forgotOtp}
                           onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, ''))}
@@ -1610,8 +1516,8 @@ export default function App() {
 
                       <div className="space-y-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         <label className="block">Target New PIN Code</label>
-                        <input 
-                          type="password" 
+                        <input
+                          type="password"
                           value={forgotNewPass}
                           onChange={(e) => setForgotNewPass(e.target.value)}
                           className="w-full bg-[#070a13] border border-slate-800 rounded-xl p-3 text-slate-200 outline-none focus:border-[#c5a880] text-xs font-mono"
@@ -1662,17 +1568,126 @@ export default function App() {
 
       </div>
     );
+  };
+
+  // Main UI routing control block
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return (
+          <DashboardHome
+            summary={summary}
+            recentPayments={payments}
+            recentSales={installments}
+            onNavigate={(tab) => setActiveTab(tab as any)}
+            currentUser={currentUser}
+            customers={customers}
+          />
+        );
+      case 'customers':
+        return (
+          <CustomerManagement
+            customers={customers}
+            installments={installments}
+            payments={payments}
+            onAddCustomer={handleAddCustomer}
+            onEditCustomer={handleEditCustomer}
+            onDeleteCustomer={handleDeleteCustomer}
+            currentUser={currentUser}
+          />
+        );
+      case 'vehicles':
+        return (
+          <VehicleManagement
+            vehicles={vehicles}
+            onAddVehicle={handleAddVehicle}
+            onEditVehicle={handleEditVehicle}
+            onDeleteVehicle={handleDeleteVehicle}
+            currentUser={currentUser}
+          />
+        );
+      case 'installments':
+        return (
+          <InstallmentManagement
+            customers={customers}
+            vehicles={vehicles}
+            installments={installments}
+            onAddInstallment={handleAddInstallment}
+            currentUser={currentUser}
+            allUsers={allUsers}
+          />
+        );
+      case 'repayments':
+        return (
+          <RecoveryOfficerPanel
+            customers={customers}
+            installments={installments}
+            payments={payments}
+            onRecordPayment={handleRecordPayment}
+            currentUser={currentUser}
+          />
+        );
+      case 'reports':
+        return (
+          <ReportsPanel
+            customers={customers}
+            vehicles={vehicles}
+            installments={installments}
+            payments={payments}
+            summary={summary}
+          />
+        );
+      case 'security':
+        return (
+          <BackupLogsPanel
+            auditLogs={auditLogs}
+            currentUser={currentUser}
+            onRefreshLogs={fetchData}
+            usersList={allUsers}
+            onCreateUser={handleCreateStaffUser}
+            onDeleteUser={handleDeleteStaffUser}
+            onApproveLogin={handleApproveStaffLogin}
+            onRejectLogin={handleRejectStaffLogin}
+            onResetUserPin={handleResetStaffUserPin}
+          />
+        );
+      case 'partners-profiles':
+      case 'partners-transactions':
+      case 'partners-ledger':
+      case 'partners-reports':
+        return (
+          <PartnersPanel
+            currentUser={currentUser}
+            activeSubTab={activeTab}
+            setActiveSubTab={setActiveTab}
+          />
+        );
+      default:
+        return <div>Tab not found</div>;
+    }
+  };
+
+  // Route-based rendering for unauthenticated users
+  if (!currentUser) {
+    if (location.pathname === '/login') {
+      return renderLoginPage();
+    }
+    return <LandingPage />;
+  }
+
+  // Redirect authenticated users away from login page
+  if (location.pathname === '/login') {
+    return <Navigate to="/" replace />;
   }
 
   // Active Authenticated View
   return (
     <div className="min-h-screen flex bg-gray-50 text-slate-900 font-sans selection:bg-indigo-600 selection:text-white relative">
-      
+
       {/* Sidebar navigation */}
-      <aside className={`fixed top-0 bottom-0 left-0 bg-slate-900 text-slate-200 w-64 z-40 transform transition-transform duration-300 border-r border-slate-800 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static flex flex-col justify-between shadow-xl`}>
-        
+      <aside className={`fixed top-0 bottom-0 left-0 bg-slate-900 text-slate-200 w-64 z-40 transform transition-transform duration-300 border-r border-slate-800 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 lg:static flex flex-col justify-between shadow-xl`}>
+
         {/* Dealership header title info */}
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
@@ -1680,8 +1695,8 @@ export default function App() {
               <h2 className="text-lg font-black tracking-tight text-white font-display">BAHERIA MOTORS</h2>
               <span className="text-[10px] text-slate-400 font-semibold tracking-widest block uppercase">Showroom Panel</span>
             </div>
-            <button 
-              onClick={() => setSidebarOpen(false)} 
+            <button
+              onClick={() => setSidebarOpen(false)}
               className="lg:hidden p-1 text-slate-400 hover:text-white"
             >
               <X size={18} />
@@ -1710,9 +1725,8 @@ export default function App() {
                   id={`btn-menu-tab-${menu.id}`}
                   key={menu.id}
                   onClick={() => setActiveTab(menu.id as any)}
-                  className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center gap-3 relative overflow-hidden select-none cursor-pointer ${
-                    isActive ? 'text-white' : 'text-slate-400 hover:text-slate-100'
-                  }`}
+                  className={`w-full text-left py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center gap-3 relative overflow-hidden select-none cursor-pointer ${isActive ? 'text-white' : 'text-slate-400 hover:text-slate-100'
+                    }`}
                 >
                   {isActive && (
                     <motion.span
@@ -1735,18 +1749,18 @@ export default function App() {
             <div className="bg-[#1e293b]/60 border border-slate-800/80 rounded-2xl p-3 space-y-3 shadow-md">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <img 
-                    src={currentUser.githubProfile.avatar_url} 
-                    className="w-10 h-10 rounded-full border-2 border-[#c5a880]/80 object-cover bg-slate-800 shrink-0" 
-                    alt="GitHub Avatar" 
+                  <img
+                    src={currentUser.githubProfile.avatar_url}
+                    className="w-10 h-10 rounded-full border-2 border-[#c5a880]/80 object-cover bg-slate-800 shrink-0"
+                    alt="GitHub Avatar"
                   />
                   <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-900 flex items-center justify-center text-[8px] text-white">✓</span>
                 </div>
                 <div className="truncate flex-1">
                   <span className="font-extrabold text-xs block text-slate-100 truncate leading-snug">{currentUser.name}</span>
-                  <a 
-                    href={currentUser.githubProfile.html_url} 
-                    target="_blank" 
+                  <a
+                    href={currentUser.githubProfile.html_url}
+                    target="_blank"
                     rel="noreferrer"
                     className="text-[10px] text-[#c5a880] font-mono font-bold hover:underline flex items-center gap-1 mt-0.5"
                   >
@@ -1755,10 +1769,10 @@ export default function App() {
                   </a>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between text-[9px] font-mono text-slate-400 border-t border-slate-800/50 pt-2 shrink-0">
                 <span>Repos: <strong>{currentUser.githubProfile.public_repos}</strong></span>
-                <button 
+                <button
                   onClick={handleDisconnectGitHub}
                   className="text-rose-400 hover:text-rose-300 font-bold uppercase tracking-wider text-[8px] hover:underline bg-transparent border-none cursor-pointer p-0"
                 >
@@ -1791,7 +1805,7 @@ export default function App() {
             </button>
           )}
 
-          <button 
+          <button
             id="btn-logout"
             onClick={handleLogout}
             className="w-full bg-[#1e1e24] hover:bg-rose-950/20 text-slate-400 hover:text-rose-400 font-bold text-xs py-2 px-4 rounded-xl border border-slate-800/80 hover:border-rose-950/30 flex items-center justify-center gap-2 transition"
@@ -1804,12 +1818,12 @@ export default function App() {
 
       {/* Main Container Right Side */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        
+
         {/* Top Navbar Header */}
         <header className="bg-white border-b border-slate-100 h-16 flex items-center justify-between px-6 shrink-0 relative z-30">
           <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)} 
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden p-1.5 hover:bg-slate-100 rounded-lg text-slate-600"
             >
               <Menu size={20} />
@@ -1818,9 +1832,9 @@ export default function App() {
             {/* Global Global Instant search suggestion query bar */}
             <div className="relative flex items-center gap-3 bg-[#121214] border border-[#2e2e33] hover:border-[#af9268]/45 focus-within:border-[#af9268] focus-within:ring-2 focus-within:ring-[#af9268]/10 px-4 py-2 rounded-lg text-xs w-64 sm:w-96 transition-all duration-300 shadow-[inset_0_1.5px_4px_rgba(0,0,0,0.6)]">
               <Search size={15} className="text-[#af9268] shrink-0" />
-              <input 
-                type="text" 
-                placeholder="Search installment customers or showroom vehicles..." 
+              <input
+                type="text"
+                placeholder="Search installment customers or showroom vehicles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => { if (searchResults.length > 0) setShowSearchResults(true); }}
@@ -1838,8 +1852,8 @@ export default function App() {
                   </div>
                   <div className="divide-y divide-[#1e1e21]">
                     {searchResults.map((res, i) => (
-                      <div 
-                        key={i} 
+                      <div
+                        key={i}
                         className="p-3 hover:bg-[#1a1a1d] cursor-pointer transition flex items-center justify-between"
                         onClick={() => {
                           if (res.type === 'customer') {
@@ -1878,7 +1892,7 @@ export default function App() {
             <div className="w-[1.5px] h-6 bg-[#2e2e33] hidden md:block"></div>
 
             {/* High-end Theme Toggle */}
-            <button 
+            <button
               onClick={() => setIsLightTheme(!isLightTheme)}
               className="p-2.5 bg-[#121214] hover:bg-[#1a1a1d] rounded-lg border border-[#2e2e33] text-slate-400 hover:text-white transition cursor-pointer relative flex items-center justify-center animate-fade-in"
               title={isLightTheme ? "Switch to Dark Theme" : "Switch to Light Theme"}
@@ -1888,7 +1902,7 @@ export default function App() {
 
             {/* User notification badge */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
                 className="p-2.5 bg-[#121214] hover:bg-[#1a1a1d] rounded-lg border border-[#2e2e33] text-slate-400 hover:text-white block transition cursor-pointer relative"
               >
@@ -1938,8 +1952,8 @@ export default function App() {
                         const isSale = n.type === 'sale';
                         const isRecovery = n.type === 'recovery';
                         return (
-                          <div 
-                            key={n.id} 
+                          <div
+                            key={n.id}
                             onClick={async () => {
                               if (!n.isRead) {
                                 try {
@@ -1968,7 +1982,7 @@ export default function App() {
                                 </span>
                               </div>
                             </div>
-                            
+
                             {!n.isRead && (
                               <span className="absolute top-4 right-4 w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
                             )}
@@ -2022,7 +2036,7 @@ export default function App() {
       {githubModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
           <div className="relative w-full max-w-lg bg-[#0f172a] border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            
+
             {/* Header */}
             <div className="p-6 border-b border-slate-800 bg-slate-950/40 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -2034,7 +2048,7 @@ export default function App() {
                   <p className="text-[10px] text-slate-400 font-medium">Verify credentials or search and pull GitHub profiles to counter operator</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setGithubModalOpen(false)}
                 className="p-1 px-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 text-xs font-bold transition cursor-pointer"
               >
@@ -2044,7 +2058,7 @@ export default function App() {
 
             {/* Content Scrollable area */}
             <div className="p-6 overflow-y-auto space-y-6">
-              
+
               {githubFetchError && (
                 <div className="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-4 py-3 rounded-xl text-[11px] font-bold flex items-center gap-2">
                   <AlertCircle size={14} className="shrink-0 animate-bounce" />
@@ -2061,11 +2075,11 @@ export default function App() {
                 <p className="text-[10px] text-slate-405 leading-relaxed text-slate-400">
                   Simply key in your GitHub username to download your public profile metadata, including real avatar, repository checklist counts, and profile hyperlink directly from GitHub's live server.
                 </p>
-                
+
                 <div className="flex gap-2.5 pt-1.5">
                   <div className="relative flex-1">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-[10px] font-bold">@</span>
-                    <input 
+                    <input
                       type="text"
                       value={githubUsernameInput}
                       onChange={(e) => setGithubUsernameInput(e.target.value)}
@@ -2127,7 +2141,7 @@ export default function App() {
 
             {/* Footer */}
             <div className="p-4 px-6 border-t border-slate-800 bg-slate-950/40 text-right">
-              <button 
+              <button
                 onClick={() => setGithubModalOpen(false)}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs py-2 px-5 rounded-xl border border-slate-705 transition cursor-pointer"
               >
