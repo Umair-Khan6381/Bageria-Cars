@@ -742,7 +742,7 @@ export default function App() {
     }
     setSetupLoading(true);
     try {
-      const resp = await fetch('/api/auth/setup-admin', {
+      const resp = await fetch(`${API_BASE_URL}/api/auth/setup-admin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
