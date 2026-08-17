@@ -53,8 +53,32 @@ import LandingPage from './components/LandingPage';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { User, Customer, Vehicle, InstallmentPlan, Payment, AuditLog } from './types';
+const API_BASE_URL =
+  'https://baheria-cars-backend-c9hnf7bwdbabfff3.southindia-01.azurewebsites.net';
 
 async function safeFetchJson<T>(url: string, fallback: T): Promise<T> {
+  try {
+    const apiUrl = url.startsWith('/api/')
+      ? `${API_BASE_URL}${url}`
+      : url;
+
+    const res = await fetch(apiUrl);
+
+    if (!res.ok) return fallback;
+
+    const contentType = res.headers.get('content-type');
+
+    if (!contentType || !contentType.includes('application/json')) {
+      return fallback;
+    }
+
+    return await res.json() as T;
+  } catch (e) {
+    // Completely silent fallback during boot/reboot reloads
+    return fallback;
+  }
+}
+/*async function safeFetchJson<T>(url: string, fallback: T): Promise<T> {
   try {
     const res = await fetch(url);
     if (!res.ok) return fallback;
@@ -67,7 +91,7 @@ async function safeFetchJson<T>(url: string, fallback: T): Promise<T> {
     // Completely silent fallback during boot/reboot reloads
     return fallback;
   }
-}
+}*/
 
 export default function App() {
   const location = useLocation();
