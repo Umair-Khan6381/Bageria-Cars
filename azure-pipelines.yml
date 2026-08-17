@@ -6,7 +6,7 @@ pool:
 
 variables:
   nodeVersion: '24.18.1'
-  azureServiceConnection: 'Baheria'
+  azureServiceConnection: '47fef7c2-761f-47ac-821c-5b01ebdf16db'
   frontendAppName: 'baheria-cars-frontend'
   backendAppName: 'baheria-cars-backend'
 
