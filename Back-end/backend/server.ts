@@ -179,7 +179,7 @@ async function sendRealEmail(to: string, subject: string, text: string) {
   }
 }
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const DB_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DB_DIR, 'db.json');
 const UPLOADS_DIR = path.join(DB_DIR, 'uploads');
@@ -455,7 +455,7 @@ async function syncMysqlData() {
     if (count === 0) {
       console.log(`🔄 [MySQL/XAMPP] MySQL has no users. Importing existing dataset from local JSON file to XAMPP...`);
       const jsonDb = readJsonDbFile();
-      
+
       // Save all existing JSON data to newly created MySQL Database
       await saveAllToMysql(jsonDb);
       localDbCache = jsonDb;
@@ -766,7 +766,7 @@ function readDb() {
 
 function writeDb(data: any) {
   localDbCache = data;
-  
+
   // 1. Dual-write backup write to local JSON file synchronously
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
@@ -868,7 +868,7 @@ async function triggerNotification(notificationInput: {
   metadata?: any;
 }) {
   const db = readDb();
-  
+
   // Format notification
   const notification = {
     id: 'not-' + Math.random().toString(36).substr(2, 9),
@@ -905,10 +905,10 @@ async function triggerNotification(notificationInput: {
   // B. WhatsApp Channel
   if (settings.enableWhatsApp && settings.adminWhatsApp) {
     const formattedMsg = `🔔 *${notification.title}*\n\n${notification.message}\n\n_Showroom Security Activity Tracker_`;
-    
+
     // Check if we use real Twilio or mock/simulated channel
     const usesRealTwilio = (settings.twilioSid && settings.twilioToken && settings.twilioFrom) || (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN);
-    
+
     if (usesRealTwilio) {
       try {
         const sid = settings.twilioSid || process.env.TWILIO_ACCOUNT_SID;
@@ -916,7 +916,7 @@ async function triggerNotification(notificationInput: {
         const from = settings.twilioFrom || process.env.TWILIO_FROM_PHONE || '+14155238886';
         const formattedTo = settings.adminWhatsApp.startsWith('whatsapp:') ? settings.adminWhatsApp : `whatsapp:${settings.adminWhatsApp}`;
         const formattedFrom = from.startsWith('whatsapp:') ? from : `whatsapp:${from}`;
-        
+
         const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`;
         const twilioRes = await fetch(twilioUrl, {
           method: 'POST',
@@ -979,7 +979,7 @@ async function triggerNotification(notificationInput: {
   // C. Email Channel
   if (settings.enableEmail && settings.adminEmail) {
     const emailSubject = `[Showroom Alert] ${notification.title}`;
-    
+
     // Create professional HTML template
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e1e8f0; border-radius: 12px; overflow: hidden; background-color: #fafafa; border-top: 4px solid #c5a880;">
@@ -1015,7 +1015,7 @@ async function triggerNotification(notificationInput: {
 
     // Try sending email using existing SMTP setup
     const usesRealEmail = process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS;
-    
+
     if (usesRealEmail) {
       try {
         const transporter = getMailTransporter();
@@ -1028,7 +1028,7 @@ async function triggerNotification(notificationInput: {
             text: notification.message,
             html: htmlBody
           });
-          
+
           db.notificationLogs.unshift({
             id: 'log-' + Math.random().toString(36).substr(2, 9),
             type: 'email',
@@ -1121,7 +1121,7 @@ app.post('/api/admin/gmail/oauth-save', (req, res) => {
   writeDb(db);
 
   logAction(loggedUser || 'admin', 'Admin', 'Gmail OAuth Authorize', `Connected Gmail sender inbox (${email}) via Google OAuth.`);
-  
+
   // Log this into notification logs
   db.notificationLogs = db.notificationLogs || [];
   db.notificationLogs.unshift({
@@ -1200,7 +1200,7 @@ app.get('/api/notifications/stream', (req, res) => {
 app.post('/api/notifications/test-channels', async (req, res) => {
   const title = "⚠️ Portal Security Shakehand Alert";
   const message = "This test alert confirms that your Admin notification profile is successfully connected. Receiving channels are fully authenticated.";
-  
+
   await triggerNotification({
     title,
     type: "system",
@@ -1215,12 +1215,12 @@ app.post('/api/notifications/test-channels', async (req, res) => {
 app.post('/api/notifications/daily-summary', async (req, res) => {
   const db = readDb();
   const today = new Date().toISOString().split('T')[0];
-  
+
   // Total Sales Today
   const todaySales = (db.installments || []).filter((ins: any) => ins.saleDate === today);
   const totalSalesCount = todaySales.length;
   const totalSalesAmount = todaySales.reduce((acc: number, ins: any) => acc + (ins.vehiclePrice || 0), 0);
-  
+
   // Total Cash Sales vs Installments
   const cashSalesCount = todaySales.filter((ins: any) => ins.saleType === 'Cash').length;
   const installmentSalesCount = totalSalesCount - cashSalesCount;
@@ -1286,59 +1286,59 @@ app.post('/api/admin/inject-sample-data', (req, res) => {
 
     // Populate installment plans (agreements)
     db.installments = [
-      { 
-        id: "inst-corolla", 
-        customerId: "c-ali", 
-        customerName: "Ali Raza", 
-        vehicleId: "v-corolla", 
-        vehicleName: "Toyota Corolla GLI (v-corolla)", 
-        totalAmount: 3400000, 
-        advancePayment: 1000000, 
-        durationMonths: 24, 
-        monthlyInstallment: 100000, 
-        balance: 2200000, 
-        startDate: "2026-03-05", 
-        nextDueDate: "2026-06-05", 
-        status: "Active", 
-        guarantorName: "Imran Raza", 
-        guarantorCnic: "35102-1234432-1", 
-        guarantorPhone: "0300-5551112" 
+      {
+        id: "inst-corolla",
+        customerId: "c-ali",
+        customerName: "Ali Raza",
+        vehicleId: "v-corolla",
+        vehicleName: "Toyota Corolla GLI (v-corolla)",
+        totalAmount: 3400000,
+        advancePayment: 1000000,
+        durationMonths: 24,
+        monthlyInstallment: 100000,
+        balance: 2200000,
+        startDate: "2026-03-05",
+        nextDueDate: "2026-06-05",
+        status: "Active",
+        guarantorName: "Imran Raza",
+        guarantorCnic: "35102-1234432-1",
+        guarantorPhone: "0300-5551112"
       },
-      { 
-        id: "inst-cultus", 
-        customerId: "c-usman", 
-        customerName: "Usman Khan", 
-        vehicleId: "v-cultus", 
-        vehicleName: "Suzuki Cultus VXL (v-cultus)", 
-        totalAmount: 2600000, 
-        advancePayment: 600000, 
-        durationMonths: 20, 
-        monthlyInstallment: 100000, 
-        balance: 1900000, 
-        startDate: "2026-04-15", 
-        nextDueDate: "2026-06-15", 
-        status: "Active", 
-        guarantorName: "Waqas Khan", 
-        guarantorCnic: "42301-4433221-5", 
-        guarantorPhone: "0321-5553322" 
+      {
+        id: "inst-cultus",
+        customerId: "c-usman",
+        customerName: "Usman Khan",
+        vehicleId: "v-cultus",
+        vehicleName: "Suzuki Cultus VXL (v-cultus)",
+        totalAmount: 2600000,
+        advancePayment: 600000,
+        durationMonths: 20,
+        monthlyInstallment: 100000,
+        balance: 1900000,
+        startDate: "2026-04-15",
+        nextDueDate: "2026-06-15",
+        status: "Active",
+        guarantorName: "Waqas Khan",
+        guarantorCnic: "42301-4433221-5",
+        guarantorPhone: "0321-5553322"
       },
-      { 
-        id: "inst-city", 
-        customerId: "c-shahid", 
-        customerName: "Shahid Afridi", 
-        vehicleId: "v-city", 
-        vehicleName: "Honda City Aspire (v-city)", 
-        totalAmount: 3800000, 
-        advancePayment: 800000, 
-        durationMonths: 20, 
-        monthlyInstallment: 150000, 
-        balance: 2850000, 
-        startDate: "2026-02-15", 
-        nextDueDate: "2026-05-15", 
-        status: "Overdue", 
-        guarantorName: "Javed Afridi", 
-        guarantorCnic: "17301-5556667-9", 
-        guarantorPhone: "0333-9993332" 
+      {
+        id: "inst-city",
+        customerId: "c-shahid",
+        customerName: "Shahid Afridi",
+        vehicleId: "v-city",
+        vehicleName: "Honda City Aspire (v-city)",
+        totalAmount: 3800000,
+        advancePayment: 800000,
+        durationMonths: 20,
+        monthlyInstallment: 150000,
+        balance: 2850000,
+        startDate: "2026-02-15",
+        nextDueDate: "2026-05-15",
+        status: "Overdue",
+        guarantorName: "Javed Afridi",
+        guarantorCnic: "17301-5556667-9",
+        guarantorPhone: "0333-9993332"
       }
     ];
 
@@ -1402,7 +1402,7 @@ app.post('/api/auth/setup-admin', (req, res) => {
   db.users.push(newAdmin);
   writeDb(db);
   logAction(username, 'Admin', 'Inaugural Admin Registered', `Initialized Master Admin seat for "${name}" with contact info "${email}"`);
-  
+
   const userSession = {
     id: newAdmin.id,
     name: newAdmin.name,
@@ -1555,14 +1555,14 @@ app.post('/api/auth/login-verify', (req, res) => {
   // Enforce secure verification approval loop for non-Admins
   if (user.role !== 'Admin') {
     const status = user.status || 'pending_first_login';
-    
+
     // Find the real Admin user email in the DB dynamically
     const adminUser = db.users.find((u: any) => u.role === 'Admin');
     const adminEmail = (adminUser && adminUser.email) || (db.notificationSettings && db.notificationSettings.adminEmail) || 'umairullah410446@gmail.com';
-    
+
     if (status === 'pending_first_login') {
       user.status = 'awaiting_approval';
-      
+
       const emailId = 'email-' + Math.random().toString(36).substr(2, 9);
       const emailItem = {
         id: emailId,
@@ -1590,7 +1590,7 @@ To review and authorize this login verification, please use the Security Approva
 
       db.verificationEmails = db.verificationEmails || [];
       db.verificationEmails.unshift(emailItem);
-      
+
       db.notifications = db.notifications || [];
       db.notifications.unshift({
         id: 'notif-' + Math.random().toString(36).substr(2, 9),
@@ -1601,7 +1601,7 @@ To review and authorize this login verification, please use the Security Approva
       });
 
       writeDb(db);
-      
+
       sendRealEmail(emailItem.to, emailItem.subject, emailItem.body);
 
       logAction(user.username, user.role, 'Login Verification Logged', `First-time login triggered notification clearance dispatch to ${adminEmail}`);
@@ -1644,7 +1644,7 @@ app.post('/api/auth/save-smtp-and-resend', async (req, res) => {
 
   const db = readDb();
   const backupSettings = db.notificationSettings ? { ...db.notificationSettings } : null;
-  
+
   // 1. Save SMTP settings permanently
   db.notificationSettings = db.notificationSettings || {};
   db.notificationSettings.smtpHost = smtpHost || 'smtp.gmail.com';
@@ -1654,7 +1654,7 @@ app.post('/api/auth/save-smtp-and-resend', async (req, res) => {
   db.notificationSettings.smtpSecure = smtpSecure !== undefined ? smtpSecure : true;
   db.notificationSettings.senderEmail = senderEmail || smtpUser;
   db.notificationSettings.enableEmail = true; // Force-enable real email sending
-  
+
   const user = db.users.find(
     (u: any) => u.username.toLowerCase() === username.toLowerCase()
   );
@@ -1735,7 +1735,7 @@ If you did not execute this login request, please update your security settings 
     if (result.success) {
       console.log(`✉️ Login verification email successfully dispatched to ${emailItem.to}`);
       logAction(user.username, user.role, 'SMTP Saved & OTP Retrigger', `Updated real SMTP outbound specs and dispatched verification code to ${toEmail}`);
-      
+
       return res.json({
         success: true,
         email: toEmail,
@@ -1743,7 +1743,7 @@ If you did not execute this login request, please update your security settings 
       });
     } else {
       console.log(`📡 SMTP dispatch failed synchronously: ${result.error}`);
-      
+
       // Roll back the saved settings since test send failed
       const freshDb = readDb();
       if (backupSettings) {
@@ -2021,7 +2021,7 @@ app.post('/api/admin/users', (req, res) => {
     id: 'u-' + Math.random().toString(36).substr(2, 9),
     name,
     username,
-    password, 
+    password,
     role, // 'Salesman' or 'Recovery Officer'
     email: email || `${username.toLowerCase()}@showroom.com`,
     status: req.body.status || 'active',
@@ -2031,7 +2031,7 @@ app.post('/api/admin/users', (req, res) => {
   db.users = db.users || [];
   db.users.push(newUser);
   writeDb(db);
-  
+
   logAction('admin', 'Admin', 'Officer Account Sealed', `Created ${role} account for "${name}" (Username: "${username}")`);
   res.json({ success: true, user: { id: newUser.id, name: newUser.name, username: newUser.username, role: newUser.role, status: newUser.status } });
 });
@@ -2051,7 +2051,7 @@ app.delete('/api/admin/users/:id', (req, res) => {
   }
 
   db.users = db.users.filter((u: any) => u.id !== id);
-  
+
   // Clean related verification emails
   db.verificationEmails = (db.verificationEmails || []).filter((email: any) => email.userId !== id);
 
@@ -2143,7 +2143,7 @@ app.post('/api/admin/users/:id/approve', (req, res) => {
   const { id } = req.params;
   const db = readDb();
   const userIdx = (db.users || []).findIndex((u: any) => u.id === id);
-  
+
   if (userIdx === -1) {
     return res.status(404).json({ error: 'User does not exist in records' });
   }
@@ -2168,7 +2168,7 @@ app.post('/api/admin/users/:id/reject', (req, res) => {
   const { id } = req.params;
   const db = readDb();
   const userIdx = (db.users || []).findIndex((u: any) => u.id === id);
-  
+
   if (userIdx === -1) {
     return res.status(404).json({ error: 'User does not exist in records' });
   }
@@ -2197,7 +2197,7 @@ app.post('/api/admin/users/:id/reject', (req, res) => {
 app.get('/api/auth/github/url', (req, res) => {
   const redirectUri = `${process.env.APP_URL || 'https://ais-dev-2mt4i5fjq53shvdahokz2i-295762983846.asia-southeast1.run.app'}/api/auth/github/callback`;
   const clientId = process.env.GITHUB_CLIENT_ID || 'MOCK_GITHUB_CLIENT_ID';
-  
+
   const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user,repo`;
   res.json({ url: authUrl });
 });
@@ -2207,10 +2207,10 @@ app.get('/api/auth/github/callback', async (req, res) => {
   const { code } = req.query;
   const clientId = process.env.GITHUB_CLIENT_ID;
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-  
+
   let githubData: any = null;
   let errorMsg: string | null = null;
-  
+
   if (!code) {
     errorMsg = 'No authorization code provided';
   } else if (!clientId || !clientSecret) {
@@ -2255,21 +2255,21 @@ app.get('/api/auth/github/callback', async (req, res) => {
           code
         })
       });
-      
+
       const tokenData: any = await tokenRes.json();
       if (tokenData.error) {
         throw new Error(tokenData.error_description || tokenData.error);
       }
-      
+
       const accessToken = tokenData.access_token;
-      
+
       const userRes = await fetch('https://api.github.com/user', {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'User-Agent': 'node-fetch'
         }
       });
-      
+
       if (userRes.ok) {
         githubData = await userRes.json();
       } else {
@@ -2330,24 +2330,24 @@ app.get('/api/auth/github/callback', async (req, res) => {
 app.put('/api/users/:userId/github', (req, res) => {
   const { userId } = req.params;
   const { githubProfile } = req.body;
-  
+
   const db = readDb();
   const index = db.users.findIndex((u: any) => u.id === userId);
-  
+
   if (index === -1) {
     return res.status(404).json({ error: 'User not found' });
   }
-  
+
   db.users[index].githubProfile = githubProfile;
   writeDb(db);
-  
+
   logAction(
-    db.users[index].username, 
-    db.users[index].role, 
-    'Link GitHub Account', 
+    db.users[index].username,
+    db.users[index].role,
+    'Link GitHub Account',
     `Connected GitHub account @${githubProfile?.login || 'unknown'} to ${db.users[index].name}`
   );
-  
+
   res.json({ status: 'ok', user: { ...db.users[index], password: undefined } });
 });
 
@@ -2355,20 +2355,20 @@ app.put('/api/users/:userId/github', (req, res) => {
 app.post('/api/users/:userId/github/fetch-public', async (req, res) => {
   const { userId } = req.params;
   const { username } = req.body;
-  
+
   if (!username) {
     return res.status(400).json({ error: 'GitHub username is required.' });
   }
-  
+
   try {
     const publicRes = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
       headers: { 'User-Agent': 'node-fetch' }
     });
-    
+
     if (!publicRes.ok) {
       throw new Error(`GitHub responded with status: ${publicRes.status}`);
     }
-    
+
     const githubData: any = await publicRes.json();
     const githubProfile = {
       login: githubData.login,
@@ -2378,24 +2378,24 @@ app.post('/api/users/:userId/github/fetch-public', async (req, res) => {
       html_url: githubData.html_url,
       bio: githubData.bio || ''
     };
-    
+
     const db = readDb();
     const index = db.users.findIndex((u: any) => u.id === userId);
-    
+
     if (index === -1) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     db.users[index].githubProfile = githubProfile;
     writeDb(db);
-    
+
     logAction(
-      db.users[index].username, 
-      db.users[index].role, 
-      'Link GitHub Public Profile', 
+      db.users[index].username,
+      db.users[index].role,
+      'Link GitHub Public Profile',
       `Directly pulled GitHub account @${githubProfile.login} for ${db.users[index].name}`
     );
-    
+
     res.json({ success: true, user: { ...db.users[index], password: undefined }, githubProfile });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to find or fetch GitHub user: ' + err.message });
@@ -2407,22 +2407,22 @@ app.post('/api/users/:userId/github/disconnect', (req, res) => {
   const { userId } = req.params;
   const db = readDb();
   const index = db.users.findIndex((u: any) => u.id === userId);
-  
+
   if (index === -1) {
     return res.status(404).json({ error: 'User not found' });
   }
-  
+
   const oldProfile = db.users[index].githubProfile;
   db.users[index].githubProfile = null;
   writeDb(db);
-  
+
   logAction(
-    db.users[index].username, 
-    db.users[index].role, 
-    'Disconnect GitHub Account', 
+    db.users[index].username,
+    db.users[index].role,
+    'Disconnect GitHub Account',
     `Disconnected GitHub account @${oldProfile?.login || 'unknown'} from ${db.users[index].name}`
   );
-  
+
   res.json({ success: true, user: { ...db.users[index], password: undefined } });
 });
 
@@ -2701,7 +2701,7 @@ app.get('/api/installments', (req, res) => {
       const monthsElapsed = (currentYear - start.getFullYear()) * 12 + (currentMonth - start.getMonth());
       const expectedPaidInstallments = Math.min(plan.durationMonths, Math.max(0, monthsElapsed));
       const expectedPaidAmount = expectedPaidInstallments * plan.monthlyInstallment;
-      
+
       const realAmountPaidExcludingDown = plan.totalPaid - plan.downPayment;
       const expectedExcludingDown = expectedPaidAmount;
 
@@ -2837,7 +2837,7 @@ app.post('/api/installments', (req, res) => {
   }
 
   writeDb(db);
-  
+
   // Trigger Real-Time Notification & Dual Alert
   const saleNotificationMsg = `🚗 *New Vehicle Sale Booked / نئی گاڑی فروخت ہوئی*
 • Salesman / سیلز مین: ${resolvedSalesmanName || 'Showroom Representative'}
@@ -2989,7 +2989,7 @@ app.get('/api/search', (req, res) => {
   const results: any[] = [];
 
   // 1. Search customers matches
-  const matchedCustomers = db.customers.filter((c: any) => 
+  const matchedCustomers = db.customers.filter((c: any) =>
     c.name.toLowerCase().includes(query) ||
     c.cnic.replace(/[^0-9]/g, '').includes(query.replace(/[^0-9]/g, '')) ||
     c.phone.includes(query)
@@ -3014,7 +3014,7 @@ app.get('/api/search', (req, res) => {
   });
 
   // 2. Search vehicles matches (registration, chassis, engine, company or model)
-  const matchedVehicles = db.vehicles.filter((v: any) => 
+  const matchedVehicles = db.vehicles.filter((v: any) =>
     v.company.toLowerCase().includes(query) ||
     v.model.toLowerCase().includes(query) ||
     v.registrationNumber.toLowerCase().includes(query) ||
@@ -3052,11 +3052,11 @@ app.get('/api/financials/dashboard', (req, res) => {
 
   if (role === 'Salesman' && userId) {
     const myPlans = db.installments.filter((p: any) => p.salesmanId === userId);
-    
+
     const totalVehiclesSold = myPlans.length;
     const totalInstallmentCustomers = myPlans.filter((p: any) => p.saleType !== 'Cash' && p.status !== 'Completed').length;
     const totalCashCustomers = myPlans.filter((p: any) => p.saleType === 'Cash').length;
-    
+
     const totalPendingRecovery = myPlans
       .filter((p: any) => p.status !== 'Completed')
       .reduce((sum: number, p: any) => sum + p.balance, 0);
@@ -3065,7 +3065,7 @@ app.get('/api/financials/dashboard', (req, res) => {
     const revenueGenerated = myPlans.reduce((sum: number, p: any) => sum + p.vehiclePrice, 0);
 
     const overdueInstallments = myPlans.filter((p: any) => p.status === 'Overdue' || p.status === 'Defaulter').length;
-    
+
     // Monthly stats
     const nowObj = new Date();
     const curYear = nowObj.getFullYear();
@@ -3100,9 +3100,9 @@ app.get('/api/financials/dashboard', (req, res) => {
   // Summary Metrics
   const totalVehiclesAvailable = db.vehicles.filter((v: any) => v.status === 'Available').length;
   const totalVehiclesSold = db.vehicles.filter((v: any) => v.status === 'Sold on Installment' || v.status === 'Sold on Cash').length;
-  
+
   const totalInstallmentCustomers = db.installments.filter((p: any) => p.status !== 'Completed').length;
-  
+
   // Real calculation for cash sales vs installment sales:
   // Customers with vehicles sold on "Sold on Cash" or "Completed Installments" are Cash completed/Fully Paid.
   const totalCashSold = db.vehicles.filter((v: any) => v.status === 'Sold on Cash').length;
@@ -3188,10 +3188,10 @@ app.post('/api/backups', (req, res) => {
   try {
     const filename = `backup_${Date.now()}_db.json`;
     const backupPath = path.join(DB_DIR, filename);
-    
+
     // Copy the db file
     fs.copyFileSync(DB_FILE, backupPath);
-    
+
     logAction(loggedUser?.username || 'system', loggedUser?.role || 'Guest', 'Database Backup', `Manual backup created successfully: ${filename}`);
     res.json({ success: true, filename, createdAt: new Date().toISOString() });
   } catch (error: any) {
@@ -3213,7 +3213,7 @@ app.get('/api/backups', (req, res) => {
           createdAt: stats.birthtime.toISOString()
         };
       })
-      .sort((a,b) => b.createdAt.localeCompare(a.createdAt));
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
     res.json(backups);
   } catch (error) {
