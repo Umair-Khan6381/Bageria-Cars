@@ -1,0 +1,191 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  nodeVersion: '24.18.1'
+  azureServiceConnection: 'Azure-Baheria-Cars'
+  frontendAppName: 'baheria-cars-frontend'
+  backendAppName: 'baheria-cars-backend'
+
+stages:
+
+# ============================================================
+# BUILD
+# ============================================================
+
+- stage: Build
+  displayName: 'Build Frontend and Backend'
+
+  jobs:
+
+  # ----------------------------------------------------------
+  # FRONTEND
+  # ----------------------------------------------------------
+
+  - job: BuildFrontend
+    displayName: 'Build React Frontend'
+
+    steps:
+
+    - task: NodeTool@0
+      displayName: 'Install Node.js'
+      inputs:
+        versionSpec: '$(nodeVersion)'
+
+    - script: |
+        node --version
+        npm --version
+      displayName: 'Check Node.js'
+
+    - script: |
+        npm ci
+      workingDirectory: '$(Build.SourcesDirectory)/Frontend'
+      displayName: 'Frontend npm ci'
+
+    - script: |
+        npm run build
+      workingDirectory: '$(Build.SourcesDirectory)/Frontend'
+      displayName: 'Frontend npm build'
+
+    - script: |
+        mkdir -p "$(Build.ArtifactStagingDirectory)/frontend"
+
+        cp "$(Build.SourcesDirectory)/Frontend/package.json" \
+           "$(Build.ArtifactStagingDirectory)/frontend/"
+
+        cp "$(Build.SourcesDirectory)/Frontend/package-lock.json" \
+           "$(Build.ArtifactStagingDirectory)/frontend/"
+
+        cp "$(Build.SourcesDirectory)/Frontend/server.cjs" \
+           "$(Build.ArtifactStagingDirectory)/frontend/"
+
+        cp -R "$(Build.SourcesDirectory)/Frontend/dist" \
+           "$(Build.ArtifactStagingDirectory)/frontend/dist"
+      displayName: 'Prepare Frontend Package'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Frontend Artifact'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/frontend'
+        artifact: 'frontend'
+
+
+  # ----------------------------------------------------------
+  # BACKEND
+  # ----------------------------------------------------------
+
+  - job: BuildBackend
+    displayName: 'Build Node.js Backend'
+
+    steps:
+
+    - task: NodeTool@0
+      displayName: 'Install Node.js'
+      inputs:
+        versionSpec: '$(nodeVersion)'
+
+    - script: |
+        node --version
+        npm --version
+      displayName: 'Check Node.js'
+
+    - script: |
+        npm ci
+      workingDirectory: '$(Build.SourcesDirectory)/Back-end'
+      displayName: 'Backend npm ci'
+
+    - script: |
+        npm run build
+      workingDirectory: '$(Build.SourcesDirectory)/Back-end'
+      displayName: 'Backend npm build'
+
+    - script: |
+        mkdir -p "$(Build.ArtifactStagingDirectory)/backend"
+
+        cp "$(Build.SourcesDirectory)/Back-end/package.json" \
+           "$(Build.ArtifactStagingDirectory)/backend/"
+
+        cp "$(Build.SourcesDirectory)/Back-end/package-lock.json" \
+           "$(Build.ArtifactStagingDirectory)/backend/"
+
+        cp -R "$(Build.SourcesDirectory)/Back-end/dist" \
+           "$(Build.ArtifactStagingDirectory)/backend/dist"
+      displayName: 'Prepare Backend Package'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Backend Artifact'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/backend'
+        artifact: 'backend'
+
+
+# ============================================================
+# DEPLOY
+# ============================================================
+
+- stage: Deploy
+  displayName: 'Deploy to Azure'
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+
+  # ----------------------------------------------------------
+  # FRONTEND DEPLOY
+  # ----------------------------------------------------------
+
+  - deployment: DeployFrontend
+    displayName: 'Deploy Frontend'
+    environment: 'baheria-frontend'
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - download: current
+            artifact: frontend
+            displayName: 'Download Frontend Artifact'
+
+          - task: AzureWebApp@1
+            displayName: 'Deploy Frontend to Azure'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              appType: 'webAppLinux'
+              appName: '$(frontendAppName)'
+              package: '$(Pipeline.Workspace)/frontend'
+              deploymentMethod: 'zipDeploy'
+              startUpCommand: 'node server.cjs'
+
+
+  # ----------------------------------------------------------
+  # BACKEND DEPLOY
+  # ----------------------------------------------------------
+
+  - deployment: DeployBackend
+    displayName: 'Deploy Backend'
+    environment: 'baheria-backend'
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - download: current
+            artifact: backend
+            displayName: 'Download Backend Artifact'
+
+          - task: AzureWebApp@1
+            displayName: 'Deploy Backend to Azure'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              appType: 'webAppLinux'
+              appName: '$(backendAppName)'
+              package: '$(Pipeline.Workspace)/backend'
+              deploymentMethod: 'zipDeploy'
+              startUpCommand: 'node dist/server.cjs'
