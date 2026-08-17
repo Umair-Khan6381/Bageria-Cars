@@ -6,7 +6,7 @@ pool:
 
 variables:
   nodeVersion: '24.18.1'
-  azureServiceConnection: '(47fef7c2-761f-47ac-821c-5b01ebdf16db)'
+  azureServiceConnection: 'Baheria'
   frontendAppName: 'baheria-cars-frontend'
   backendAppName: 'baheria-cars-backend'
 
@@ -21,9 +21,9 @@ stages:
 
   jobs:
 
-  # ----------------------------------------------------------
-  # FRONTEND
-  # ----------------------------------------------------------
+  # ==========================================================
+  # FRONTEND BUILD
+  # ==========================================================
 
   - job: BuildFrontend
     displayName: 'Build React Frontend'
@@ -43,12 +43,12 @@ stages:
     - script: |
         npm ci
       workingDirectory: '$(Build.SourcesDirectory)/Frontend'
-      displayName: 'Frontend npm ci'
+      displayName: 'Frontend - npm ci'
 
     - script: |
         npm run build
       workingDirectory: '$(Build.SourcesDirectory)/Frontend'
-      displayName: 'Frontend npm build'
+      displayName: 'Frontend - npm run build'
 
     - script: |
         mkdir -p "$(Build.ArtifactStagingDirectory)/frontend"
@@ -73,9 +73,9 @@ stages:
         artifact: 'frontend'
 
 
-  # ----------------------------------------------------------
-  # BACKEND
-  # ----------------------------------------------------------
+  # ==========================================================
+  # BACKEND BUILD
+  # ==========================================================
 
   - job: BuildBackend
     displayName: 'Build Node.js Backend'
@@ -95,12 +95,12 @@ stages:
     - script: |
         npm ci
       workingDirectory: '$(Build.SourcesDirectory)/Back-end'
-      displayName: 'Backend npm ci'
+      displayName: 'Backend - npm ci'
 
     - script: |
         npm run build
       workingDirectory: '$(Build.SourcesDirectory)/Back-end'
-      displayName: 'Backend npm build'
+      displayName: 'Backend - npm run build'
 
     - script: |
         mkdir -p "$(Build.ArtifactStagingDirectory)/backend"
@@ -133,9 +133,9 @@ stages:
 
   jobs:
 
-  # ----------------------------------------------------------
+  # ==========================================================
   # FRONTEND DEPLOY
-  # ----------------------------------------------------------
+  # ==========================================================
 
   - deployment: DeployFrontend
     displayName: 'Deploy Frontend'
@@ -162,9 +162,9 @@ stages:
               startUpCommand: 'node server.cjs'
 
 
-  # ----------------------------------------------------------
+  # ==========================================================
   # BACKEND DEPLOY
-  # ----------------------------------------------------------
+  # ==========================================================
 
   - deployment: DeployBackend
     displayName: 'Deploy Backend'
@@ -189,3 +189,6 @@ stages:
               package: '$(Pipeline.Workspace)/backend'
               deploymentMethod: 'zipDeploy'
               startUpCommand: 'node dist/server.cjs'
+              appSettings: >
+                -NODE_ENV production
+                -SCM_DO_BUILD_DURING_DEPLOYMENT true
