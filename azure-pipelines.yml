@@ -11,14 +11,16 @@ variables:
   backendAppName: "baheria-cars-backend"
 
 stages:
-  # ============================================================
-  # BUILD
-  # ============================================================
+
+# ============================================================
+# BUILD STAGE
+# ============================================================
 
   - stage: Build
     displayName: "Build Frontend and Backend"
 
     jobs:
+
       # ==========================================================
       # FRONTEND BUILD
       # ==========================================================
@@ -27,6 +29,7 @@ stages:
         displayName: "Build React Frontend"
 
         steps:
+
           - task: NodeTool@0
             displayName: "Install Node.js"
             inputs:
@@ -37,24 +40,28 @@ stages:
               npm --version
             displayName: "Check Node.js"
 
+          # ---------------- FRONTEND INSTALL ----------------
+
           - script: |
               npm ci
             workingDirectory: "$(Build.SourcesDirectory)/Frontend"
             displayName: "Frontend - npm ci"
 
-          # ================= FRONTEND TEST =================
+          # ---------------- FRONTEND TEST ----------------
 
           - script: |
               npm test
             workingDirectory: "$(Build.SourcesDirectory)/Frontend"
             displayName: "Frontend - npm test"
 
-          # =================================================
+          # ---------------- FRONTEND BUILD ----------------
 
           - script: |
               npm run build
             workingDirectory: "$(Build.SourcesDirectory)/Frontend"
             displayName: "Frontend - npm run build"
+
+          # ---------------- PREPARE FRONTEND ----------------
 
           - script: |
               mkdir -p "$(Build.ArtifactStagingDirectory)/frontend"
@@ -72,11 +79,14 @@ stages:
                  "$(Build.ArtifactStagingDirectory)/frontend/dist"
             displayName: "Prepare Frontend Package"
 
+          # ---------------- PUBLISH FRONTEND ----------------
+
           - task: PublishPipelineArtifact@1
             displayName: "Publish Frontend Artifact"
             inputs:
               targetPath: "$(Build.ArtifactStagingDirectory)/frontend"
               artifact: "frontend"
+
 
       # ==========================================================
       # BACKEND BUILD
@@ -86,6 +96,7 @@ stages:
         displayName: "Build Node.js Backend"
 
         steps:
+
           - task: NodeTool@0
             displayName: "Install Node.js"
             inputs:
@@ -96,24 +107,47 @@ stages:
               npm --version
             displayName: "Check Node.js"
 
+          # ---------------- BACKEND INSTALL ----------------
+
           - script: |
               npm ci
             workingDirectory: "$(Build.SourcesDirectory)/Back-end"
             displayName: "Backend - npm ci"
 
-          # ================= BACKEND TEST =================
+          # ---------------- BACKEND TEST ----------------
 
           - script: |
               npm test
             workingDirectory: "$(Build.SourcesDirectory)/Back-end"
             displayName: "Backend - npm test"
 
-          # ================================================
+          # ---------------- BACKEND BUILD ----------------
 
           - script: |
               npm run build
             workingDirectory: "$(Build.SourcesDirectory)/Back-end"
             displayName: "Backend - npm run build"
+
+          # ---------------- VERIFY BACKEND BUILD ----------------
+
+          - script: |
+              echo "======================================"
+              echo "Checking backend build"
+              echo "======================================"
+
+              if [ -f "$(Build.SourcesDirectory)/Back-end/dist/server.cjs" ]; then
+                echo "SUCCESS: dist/server.cjs exists."
+              else
+                echo "ERROR: dist/server.cjs was not created."
+                exit 1
+              fi
+
+              echo ""
+              echo "Backend dist contents:"
+              ls -la "$(Build.SourcesDirectory)/Back-end/dist"
+            displayName: "Verify Backend Build"
+
+          # ---------------- PREPARE BACKEND ----------------
 
           - script: |
               mkdir -p "$(Build.ArtifactStagingDirectory)/backend"
@@ -126,7 +160,15 @@ stages:
 
               cp -R "$(Build.SourcesDirectory)/Back-end/dist" \
                  "$(Build.ArtifactStagingDirectory)/backend/dist"
+
+              echo "======================================"
+              echo "Backend artifact contents"
+              echo "======================================"
+
+              find "$(Build.ArtifactStagingDirectory)/backend" -maxdepth 3 -type f
             displayName: "Prepare Backend Package"
+
+          # ---------------- PUBLISH BACKEND ----------------
 
           - task: PublishPipelineArtifact@1
             displayName: "Publish Backend Artifact"
@@ -134,9 +176,10 @@ stages:
               targetPath: "$(Build.ArtifactStagingDirectory)/backend"
               artifact: "backend"
 
-  # ============================================================
-  # DEPLOY
-  # ============================================================
+
+# ============================================================
+# DEPLOY STAGE
+# ============================================================
 
   - stage: Deploy
     displayName: "Deploy to Azure"
@@ -144,8 +187,9 @@ stages:
     condition: succeeded()
 
     jobs:
+
       # ==========================================================
-      # FRONTEND DEPLOY
+      # FRONTEND DEPLOYMENT
       # ==========================================================
 
       - deployment: DeployFrontend
@@ -155,10 +199,16 @@ stages:
         strategy:
           runOnce:
             deploy:
+
               steps:
+
+                # ---------------- DOWNLOAD ARTIFACT ----------------
+
                 - download: current
                   artifact: frontend
                   displayName: "Download Frontend Artifact"
+
+                # ---------------- DEPLOY FRONTEND ----------------
 
                 - task: AzureWebApp@1
                   displayName: "Deploy Frontend to Azure"
@@ -170,8 +220,17 @@ stages:
                     deploymentMethod: "zipDeploy"
                     startUpCommand: "node server.cjs"
 
+                # ---------------- FRONTEND COMPLETE ----------------
+
+                - script: |
+                    echo "======================================"
+                    echo "Frontend deployment completed"
+                    echo "======================================"
+                  displayName: "Frontend Deployment Complete"
+
+
       # ==========================================================
-      # BACKEND DEPLOY
+      # BACKEND DEPLOYMENT
       # ==========================================================
 
       - deployment: DeployBackend
@@ -181,10 +240,36 @@ stages:
         strategy:
           runOnce:
             deploy:
+
               steps:
+
+                # ---------------- DOWNLOAD ARTIFACT ----------------
+
                 - download: current
                   artifact: backend
                   displayName: "Download Backend Artifact"
+
+                # ---------------- VERIFY ARTIFACT ----------------
+
+                - script: |
+                    echo "======================================"
+                    echo "Backend artifact contents"
+                    echo "======================================"
+
+                    find "$(Pipeline.Workspace)/backend" -maxdepth 3 -type f
+
+                    echo ""
+                    echo "Checking server.cjs..."
+
+                    if [ -f "$(Pipeline.Workspace)/backend/dist/server.cjs" ]; then
+                      echo "SUCCESS: dist/server.cjs exists."
+                    else
+                      echo "ERROR: dist/server.cjs NOT FOUND."
+                      exit 1
+                    fi
+                  displayName: "Verify Backend Artifact"
+
+                # ---------------- DEPLOY BACKEND ----------------
 
                 - task: AzureWebApp@1
                   displayName: "Deploy Backend to Azure"
@@ -195,6 +280,17 @@ stages:
                     package: "$(Pipeline.Workspace)/backend"
                     deploymentMethod: "zipDeploy"
                     startUpCommand: "node dist/server.cjs"
+
+                    # IMPORTANT:
+                    # Do NOT enable SCM_DO_BUILD_DURING_DEPLOYMENT.
+                    # The backend has already been built in the Build stage.
                     appSettings: >
                       -NODE_ENV production
-                      -SCM_DO_BUILD_DURING_DEPLOYMENT true
+
+                # ---------------- BACKEND COMPLETE ----------------
+
+                - script: |
+                    echo "======================================"
+                    echo "Backend deployment completed"
+                    echo "======================================"
+                  displayName: "Backend Deployment Complete"
